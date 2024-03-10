@@ -1,8 +1,6 @@
 """
     VERSION 2.1.8
     LAST MODIFIED 01/02/2024
-    DEV CALLUM W
-    COPYRIGHT 2023 - THE END OF TIME
 """
 
 # GUI Imports
@@ -187,7 +185,7 @@ class IPLookupApp:
     @staticmethod
     def internet() -> bool:
         try:
-            response = requests.get("http://www.google.com")
+            response = requests.get("https://www.google.com")
             if response.status_code == 200:
                 return True
         except requests.ConnectionError:
