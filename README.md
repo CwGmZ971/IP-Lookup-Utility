@@ -3,8 +3,8 @@
 This program allows users to perform IP address lookups and retrieve information about IP addresses or websites. It provides options to select between IPv4 and IPv6 addresses, choose between user-friendly or full format for the results, and performs lookups for IP addresses and website URLs.
 
 ## Version Information
-- **Version**: 2.1.8
-- **Last Modified**: 01/02/2024
+- **Version**: 2.2.0
+- **Last Modified**: 10/03/2024
 
 ## Features
 - Perform IP address lookups for both IPv4 and IPv6 addresses.
