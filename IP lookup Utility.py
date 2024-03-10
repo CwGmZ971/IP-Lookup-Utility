@@ -25,7 +25,7 @@ class IPLookupApp:
     IP Lookup Application Main Class
     """
     def __init__(self):
-        self.ver = "2.1.8"
+        self.ver = "2.2.0"
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
