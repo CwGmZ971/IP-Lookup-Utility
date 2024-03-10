@@ -30,7 +30,10 @@ This program allows users to perform IP address lookups and retrieve information
     - **Own IP Lookup**: Check your own IP address.
     - **IP Format Help**: View help documentation about IP addresses.
 
-## Important Note
-- This application requires an internet connection to perform IP lookups.
+## API Usage
+This application relies on the [ip-api.com](http://ip-api.com) API to retrieve information about IP addresses. Please note the following:
+- **API Limitations**: The usage of the API may be subject to rate limits or other restrictions imposed by ip-api.com. Please refer to their documentation for more details.
+- **Internet Connection**: An active internet connection is required for the application to access the API and retrieve IP information.
+
 
 For more information about IP addresses, please refer to the [IP Address Wikipedia page](https://en.wikipedia.org/wiki/IP_address).
