@@ -2,6 +2,8 @@
 
 This program allows users to perform IP address lookups and retrieve information about IP addresses or websites. It provides options to select between IPv4 and IPv6 addresses, choose between user-friendly or full format for the results, and performs lookups for IP addresses and website URLs.
 
+For more information about IP addresses, please refer to the [IP Address Wikipedia page](https://en.wikipedia.org/wiki/IP_address).
+
 ## Version Information
 - **Version**: 2.2.0
 - **Last Modified**: 10/03/2024
@@ -35,5 +37,13 @@ This application relies on the [ip-api.com](http://ip-api.com) API to retrieve i
 - **API Limitations**: The usage of the API may be subject to rate limits or other restrictions imposed by ip-api.com. Please refer to their documentation for more details.
 - **Internet Connection**: An active internet connection is required for the application to access the API and retrieve IP information.
 
+## Executable Version
 
-For more information about IP addresses, please refer to the [IP Address Wikipedia page](https://en.wikipedia.org/wiki/IP_address).
+An executable version of the application, created with PyInstaller, is available for users who prefer not to run the Python script directly. You can download the zip file from the following link:
+
+[Download IP Lookup Application (Executable)](exe_version/IP Lookup Utility.zip)
+
+After downloading, extract the contents of the zip file and run the executable file to use the application.
+
+## PyInstaller
+For more information about PyInstaller please visit the [PyInstaller GitHub repository](https://github.com/pyinstaller/pyinstaller).
