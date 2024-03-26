@@ -4,10 +4,6 @@ This program allows users to perform IP address lookups and retrieve information
 
 For more information about IP addresses, please refer to the [IP Address Wikipedia page](https://en.wikipedia.org/wiki/IP_address).
 
-## Version Information
-- **Version**: 2.2.0
-- **Last Modified**: 10/03/2024
-
 ## Features
 - Perform IP address lookups for both IPv4 and IPv6 addresses.
 - Retrieve information about a website's IP address.
