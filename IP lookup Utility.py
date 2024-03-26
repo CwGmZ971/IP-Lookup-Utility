@@ -12,7 +12,7 @@ import tkinter.ttk as ttk
 from threading import Thread
 
 # Networking + misc libraries
-from webbrowser import open as wopen
+from webbrowser import open as w_open
 import public_ip
 import ipaddress
 import requests
@@ -249,7 +249,7 @@ class IPLookupApp:
         Opens link to IP address Wikipedia page
         :return: None
         """
-        wopen("https://en.wikipedia.org/wiki/IP_address")
+        w_open("https://en.wikipedia.org/wiki/IP_address")
 
     def display_ip_info(self, response: dict):
         """
@@ -257,7 +257,7 @@ class IPLookupApp:
         :param response: Dictionary containing IP information.
         :return: None
         """
-        if response['status'] != 'fail':
+        if response['status'] == 'success':
             format_type = self.format_var.get()
             if format_type == 1:
                 info = f"""Country: {response['country']}
@@ -266,6 +266,7 @@ class IPLookupApp:
                         \nISP: {response['isp']}"""
                 messagebox.showinfo(f"IP Lookup Application ({self.ver})", info)
             elif format_type == 2:
+                response.pop('status', None)  # Remove status key/pair as it is no longer needed
                 formatted_info = self.format_json(response)
                 messagebox.showinfo(f"IP Lookup Application ({self.ver})", formatted_info)
         else:
