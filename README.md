@@ -41,7 +41,7 @@ This application relies on the [ip-api.com](http://ip-api.com) API to retrieve i
 
 An executable version of the application, created with PyInstaller, is available for users who prefer not to run the Python script directly. You can download the zip file from the following link:
 
-[Download IP Lookup Application (Executable)](exe_version/IP Lookup Utility.zip)
+[Download IP Lookup Application (Executable)](exe_version/)
 
 After downloading, extract the contents of the zip file and run the executable file to use the application.
 
