@@ -1,17 +1,7 @@
-"""
-    VERSION 2.2.0
-    LAST MODIFIED 10/03/2024
-"""
-
-# GUI Imports
 import tkinter as tk
 import tkinter.messagebox as messagebox
 import tkinter.ttk as ttk
-
-# Allows multithreading
 from threading import Thread
-
-# Networking + misc libraries
 from webbrowser import open as w_open
 import public_ip
 import ipaddress
@@ -21,15 +11,13 @@ import os
 
 
 class IPLookupApp:
-    """
-    IP Lookup Application Main Class
-    """
     def __init__(self):
-        self.ver = "2.2.0"
+        self.ver = "2.2.1"
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
         self.root.resizable(False, False)
+        self.cache = {}
 
         self.icon_path = os.path.join(os.getcwd(), "Icon", "LOGO.ico")
         if os.path.exists(self.icon_path):
@@ -44,10 +32,6 @@ class IPLookupApp:
         self.create_widgets()
 
     def create_widgets(self):
-        """
-        Creates the GUI elements
-        :return: None
-        """
         self.create_ip_type_frame()
         self.create_ip_entry_frame()
         self.create_website_entry_frame()
@@ -55,10 +39,6 @@ class IPLookupApp:
         self.create_buttons_frame()
 
     def create_ip_type_frame(self):
-        """
-        Creates the frame for selecting IP type (IPv4 or IPv6)
-        :return: None
-        """
         ip_type_frame = ttk.Frame(self.root)
         ip_type_frame.pack(pady=10)
         ip_type_label = ttk.Label(ip_type_frame, text="IP Type:")
@@ -69,10 +49,6 @@ class IPLookupApp:
         ipv6_radio.pack(side=tk.LEFT)
 
     def create_ip_entry_frame(self):
-        """
-        Creates the frame for entering IP address
-        :return: None
-        """
         ip_entry_frame = ttk.Frame(self.root)
         ip_entry_frame.pack(pady=10)
         ip_label = ttk.Label(ip_entry_frame, text="Enter IP Address:")
@@ -81,10 +57,6 @@ class IPLookupApp:
         self.ip_entry.pack(side=tk.LEFT)
 
     def create_website_entry_frame(self):
-        """
-        Creates the frame for entering website URL
-        :return: None
-        """
         website_entry_frame = ttk.Frame(self.root)
         website_entry_frame.pack(pady=10)
         website_label = ttk.Label(website_entry_frame, text="Enter Website URL:")
@@ -93,10 +65,6 @@ class IPLookupApp:
         self.website_entry.pack(side=tk.LEFT)
 
     def create_format_frame(self):
-        """
-        Creates the frame for selecting IP format (User-friendly or Full)
-        :return: None
-        """
         format_frame = ttk.Frame(self.root)
         format_frame.pack(pady=10)
         format_label = ttk.Label(format_frame, text="Format:")
@@ -107,10 +75,6 @@ class IPLookupApp:
         full_format_radio.pack(side=tk.LEFT)
 
     def create_buttons_frame(self):
-        """
-        Creates the frame for buttons
-        :return: None
-        """
         buttons_frame = ttk.Frame(self.root)
         buttons_frame.pack(pady=20)
         lookup_button = ttk.Button(buttons_frame, text="Lookup IP", command=self.ip_lookup)
@@ -123,10 +87,6 @@ class IPLookupApp:
         help_button.pack(side=tk.LEFT, padx=10)
 
     def ip_lookup(self):
-        """
-        Performs IP lookup based on the selected IP type and entered IP address
-        :return: None
-        """
         if self.internet():
             ip_type = self.ip_type_var.get()
             ip = self.ip_entry.get()
@@ -141,14 +101,15 @@ class IPLookupApp:
                 messagebox.showerror("Error", "Invalid IPv6 address format. Please try again.")
                 return
 
-            response = self.get_ip_info(ip)
+            if ip in self.cache:
+                response = self.cache[ip]
+            else:
+                response = self.get_ip_info(ip)
+                self.cache[ip] = response
+
             self.display_ip_info(response)
 
     def website_ip_lookup(self):
-        """
-        Performs IP lookup for a given website URL
-        :return: None
-        """
         if self.internet():
             website_url = self.website_entry.get()
             self.website_entry.delete(0, tk.END)
@@ -160,16 +121,18 @@ class IPLookupApp:
                 return
             try:
                 ip = socket.gethostbyname(website_url)
-                response = self.get_ip_info(ip)
+
+                if ip in self.cache:
+                    response = self.cache[ip]
+                else:
+                    response = self.get_ip_info(ip)
+                    self.cache[ip] = response
+
                 self.display_ip_info(response)
             except socket.gaierror:
                 messagebox.showerror("Error", "The website you entered doesn't exist.")
 
     def show_please_wait_window(self):
-        """
-        Show a 'Please Wait' window during IP lookup.
-        :return: None
-        """
         self.please_wait_window = tk.Toplevel(self.root)
         self.please_wait_window.title("Please Wait")
         self.please_wait_window.geometry("200x100")
@@ -180,14 +143,16 @@ class IPLookupApp:
         self.please_wait_label.pack(pady=20)
 
     def perform_own_ip_lookup(self):
-        """
-        Perform IP lookup for the user's own IP address.
-        :return: None
-        """
         self.show_please_wait_window()
         try:
             ip = public_ip.get()
-            response = self.get_ip_info(ip)
+
+            if ip in self.cache:
+                response = self.cache[ip]
+            else:
+                response = self.get_ip_info(ip)
+                self.cache[ip] = response
+
             self.display_ip_info(response)
             self.please_wait_window.destroy()
         except (ValueError, IOError) as err:
@@ -195,21 +160,11 @@ class IPLookupApp:
             messagebox.showerror("Error", str(err))
 
     def own_ip_lookup(self):
-        """
-        perform_own_ip_lookup executes on separate thread to keep the GUI running
-        :return: None
-        """
         if self.internet():
             Thread(target=self.perform_own_ip_lookup, daemon=True).start()
 
     @staticmethod
     def is_valid_ip_address(address: str, ip_type: int) -> bool:
-        """
-        Check if the given IP address is valid based on the IP type.
-        :param address: IP address to check.
-        :param ip_type: Type of IP address (1 for IPv4, 2 for IPv6).
-        :return: True if the IP address is valid, False otherwise.
-        """
         try:
             if ip_type == 1:
                 ipaddress.IPv4Address(address)
@@ -221,20 +176,11 @@ class IPLookupApp:
 
     @staticmethod
     def get_ip_info(ip: str) -> dict:
-        """
-        Retrieve IP information from API based on the given IP address.
-        :param ip: IP address.
-        :return: Dictionary containing IP information.
-        """
         response = requests.get("http://ip-api.com/json/" + ip).json()
         return response
 
     @staticmethod
     def internet() -> bool:
-        """
-        Check for an active internet connection
-        :return: boolean indicating whether the internet connection is active
-        """
         try:
             response = requests.get("https://www.google.com")
             if response.status_code == 200:
@@ -245,18 +191,9 @@ class IPLookupApp:
 
     @staticmethod
     def show_help():
-        """
-        Opens link to IP address Wikipedia page
-        :return: None
-        """
         w_open("https://en.wikipedia.org/wiki/IP_address")
 
     def display_ip_info(self, response: dict):
-        """
-        Display the IP information in a message box based on the selected format.
-        :param response: Dictionary containing IP information.
-        :return: None
-        """
         if response['status'] == 'success':
             format_type = self.format_var.get()
             if format_type == 1:
@@ -266,7 +203,7 @@ class IPLookupApp:
                         \nISP: {response['isp']}"""
                 messagebox.showinfo(f"IP Lookup Application ({self.ver})", info)
             elif format_type == 2:
-                response.pop('status', None)  # Remove status key/pair as it is no longer needed
+                response.pop('status', None)  
                 formatted_info = self.format_json(response)
                 messagebox.showinfo(f"IP Lookup Application ({self.ver})", formatted_info)
         else:
@@ -274,21 +211,12 @@ class IPLookupApp:
 
     @staticmethod
     def format_json(json_data: dict) -> str:
-        """
-        Formats JSON data into a human-readable string
-        :param json_data: Dictionary containing IP information
-        :return: Formatted JSON string
-        """
         formatted_info = ""
         for key, value in json_data.items():
             formatted_info += f"{key}: {value}\n"
         return formatted_info
 
     def run(self):
-        """
-        Runs the IP Lookup application
-        :return: None
-        """
         if self.internet():
             self.root.mainloop()
         else:
@@ -296,6 +224,5 @@ class IPLookupApp:
 
 
 if __name__ == "__main__":
-    # Create an instance of the IPLookupApp class and run the application
     app = IPLookupApp()
     app.run()
