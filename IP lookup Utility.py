@@ -1,7 +1,12 @@
+# GUI Imports
 import tkinter as tk
 import tkinter.messagebox as messagebox
 import tkinter.ttk as ttk
+
+# Allows multithreading
 from threading import Thread
+
+# Networking + misc libraries
 from webbrowser import open as w_open
 import public_ip
 import ipaddress
