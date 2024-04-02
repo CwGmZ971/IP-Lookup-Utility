@@ -8,10 +8,10 @@ from threading import Thread
 
 # Networking + misc libraries
 from webbrowser import open as w_open
+from appdirs import user_data_dir
 import public_ip
 import requests
 import ipaddress
-import appdirs
 import atexit
 import json
 import time
@@ -21,14 +21,14 @@ import os
 
 class IPLookupApp:
     def __init__(self):
+        self.cache = {}
         self.ver = "2.2.2"
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
         self.root.resizable(False, False)
-        self.cache = {}
         self.icon_path = os.path.join(os.getcwd(), "Icon", "LOGO.ico")
-        self.appdata_path = appdirs.user_data_dir(appname="IP Lookup Utility")
+        self.appdata_path = user_data_dir(appname="IP Lookup Utility")
 
         if os.path.exists(self.icon_path):
             self.root.iconbitmap(self.icon_path)
