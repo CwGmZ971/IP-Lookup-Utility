@@ -1,6 +1,6 @@
 # IP Lookup Application
 
-This program allows users to perform IP address lookups and retrieve information about IP addresses or websites. It provides options to select between IPv4 and IPv6 addresses, choose between user-friendly or full format for the results, and performs lookups for IP addresses and website URLs.
+This program allows users to perform IP address lookups and retrieve information about IP addresses or websites. It provides options to select between IPv4 and IPv6 addresses, choose between user-friendly or full format for the results, and performs lookups for IP addresses and website URLs. Additionally, it features caching of lookup results and the option to save logs.
 
 For more information about IP addresses, please refer to the [IP Address Wikipedia page](https://en.wikipedia.org/wiki/IP_address).
 
@@ -10,6 +10,10 @@ For more information about IP addresses, please refer to the [IP Address Wikiped
 - Display IP information in either a user-friendly or full format.
 - Capability to check the user's own IP address.
 - Option to view help documentation about IP addresses.
+
+#### As of v2.2.2:
+- Caching: Lookup results are cached to improve performance.
+- Log Saving: Option to save logs.
 
 ## Dependencies
 - `tkinter`: Python's standard GUI (Graphical User Interface) toolkit.
