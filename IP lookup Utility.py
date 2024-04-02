@@ -52,7 +52,7 @@ class IPLookupApp:
 
     def create_ip_type_frame(self):
         ip_type_frame = ttk.Frame(self.root)
-        ip_type_frame.pack(pady=10)
+        ip_type_frame.pack(pady=12)
         ip_type_label = ttk.Label(ip_type_frame, text="IP Type:")
         ip_type_label.pack(side=tk.LEFT)
         ipv4_radio = ttk.Radiobutton(ip_type_frame, text="IPv4", variable=self.ip_type_var, value=1)
@@ -62,7 +62,7 @@ class IPLookupApp:
 
     def create_ip_entry_frame(self):
         ip_entry_frame = ttk.Frame(self.root)
-        ip_entry_frame.pack(pady=10)
+        ip_entry_frame.pack(pady=12)
         ip_label = ttk.Label(ip_entry_frame, text="Enter IP Address:")
         ip_label.pack(side=tk.LEFT)
         self.ip_entry = ttk.Entry(ip_entry_frame)
@@ -70,7 +70,7 @@ class IPLookupApp:
 
     def create_website_entry_frame(self):
         website_entry_frame = ttk.Frame(self.root)
-        website_entry_frame.pack(pady=10)
+        website_entry_frame.pack(pady=12)
         website_label = ttk.Label(website_entry_frame, text="Enter Website URL:")
         website_label.pack(side=tk.LEFT)
         self.website_entry = ttk.Entry(website_entry_frame)
@@ -78,7 +78,7 @@ class IPLookupApp:
 
     def create_format_frame(self):
         format_frame = ttk.Frame(self.root)
-        format_frame.pack(pady=10)
+        format_frame.pack(pady=12)
         format_label = ttk.Label(format_frame, text="Format:")
         format_label.pack(side=tk.LEFT)
         friendly_format_radio = ttk.Radiobutton(format_frame, text="User-friendly", variable=self.format_var, value=1)
@@ -91,7 +91,7 @@ class IPLookupApp:
 
     def create_buttons_frame(self):
         buttons_frame = ttk.Frame(self.root)
-        buttons_frame.pack(pady=20)
+        buttons_frame.pack(pady=12)
         lookup_button = ttk.Button(buttons_frame, text="Lookup IP", command=self.ip_lookup)
         lookup_button.pack(side=tk.LEFT, padx=10)
         website_lookup_button = ttk.Button(buttons_frame, text="Website IP Lookup", command=self.website_ip_lookup)
