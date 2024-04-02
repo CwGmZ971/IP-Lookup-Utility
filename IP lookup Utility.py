@@ -9,15 +9,18 @@ from threading import Thread
 # Networking + misc libraries
 from webbrowser import open as w_open
 import public_ip
-import ipaddress
 import requests
+import ipaddress
+import atexit
+import json
+import time
 import socket
 import os
 
 
 class IPLookupApp:
     def __init__(self):
-        self.ver = "2.2.1"
+        self.ver = "2.2.2"
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
@@ -32,9 +35,13 @@ class IPLookupApp:
 
         self.ip_type_var = tk.IntVar(value=1)
         self.format_var = tk.IntVar(value=1)
+        self.save_log_var = tk.BooleanVar(value=False)
 
         self.style = ttk.Style()
         self.create_widgets()
+
+        # Register cleanup function to save cache on exit
+        atexit.register(self.save_cache)
 
     def create_widgets(self):
         self.create_ip_type_frame()
@@ -78,6 +85,9 @@ class IPLookupApp:
         friendly_format_radio.pack(side=tk.LEFT)
         full_format_radio = ttk.Radiobutton(format_frame, text="Full", variable=self.format_var, value=2)
         full_format_radio.pack(side=tk.LEFT)
+        ttk.Label(format_frame, text=" " * 18).pack(side=tk.LEFT)
+        save_log_checkbutton = ttk.Checkbutton(format_frame, text="Save Log", variable=self.save_log_var, onvalue=True, offvalue=False)
+        save_log_checkbutton.pack(side=tk.LEFT)
 
     def create_buttons_frame(self):
         buttons_frame = ttk.Frame(self.root)
@@ -200,6 +210,7 @@ class IPLookupApp:
 
     def display_ip_info(self, response: dict):
         if response['status'] == 'success':
+            response.pop('status', None)
             format_type = self.format_var.get()
             if format_type == 1:
                 info = f"""Country: {response['country']}
@@ -208,11 +219,28 @@ class IPLookupApp:
                         \nISP: {response['isp']}"""
                 messagebox.showinfo(f"IP Lookup Application ({self.ver})", info)
             elif format_type == 2:
-                response.pop('status', None)  
                 formatted_info = self.format_json(response)
                 messagebox.showinfo(f"IP Lookup Application ({self.ver})", formatted_info)
         else:
             messagebox.showerror("Error", f"An unexpected error occurred: {response['message']}")
+
+    def save_cache(self):
+        if self.save_log_var.get():
+            try:
+                logs_dir = "Logs"
+                if not os.path.exists(logs_dir):
+                    os.makedirs(logs_dir)
+                cache_log_path = os.path.join(logs_dir, "cache_log.txt")
+                with open(cache_log_path, "a") as file:
+                    timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+                    file.write(f"Cache saved at: {timestamp}\n")
+                    for ip, data in self.cache.items():
+                        file.write(f"IP Address: {ip}\n")
+                        file.write(json.dumps(data, indent=4))
+                        file.write("\n\n")
+                    file.write("\n")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to save cache log: {str(e)}")
 
     @staticmethod
     def format_json(json_data: dict) -> str:
