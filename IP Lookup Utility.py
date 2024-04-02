@@ -11,6 +11,7 @@ from webbrowser import open as w_open
 import public_ip
 import requests
 import ipaddress
+import appdirs
 import atexit
 import json
 import time
@@ -26,8 +27,9 @@ class IPLookupApp:
         self.root.geometry("450x230")
         self.root.resizable(False, False)
         self.cache = {}
-
         self.icon_path = os.path.join(os.getcwd(), "Icon", "LOGO.ico")
+        self.appdata_path = appdirs.user_data_dir(appname="IP Lookup Utility")
+
         if os.path.exists(self.icon_path):
             self.root.iconbitmap(self.icon_path)
         else:
@@ -40,7 +42,6 @@ class IPLookupApp:
         self.style = ttk.Style()
         self.create_widgets()
 
-        # Register cleanup function to save cache on exit
         atexit.register(self.save_cache)
 
     def create_widgets(self):
@@ -227,11 +228,12 @@ class IPLookupApp:
     def save_cache(self):
         if self.save_log_var.get() and self.cache:
             try:
-                logs_dir = "Logs"
+                logs_dir = os.path.join(self.appdata_path, "logs")
                 if not os.path.exists(logs_dir):
                     os.makedirs(logs_dir)
+
                 cache_log_path = os.path.join(logs_dir, "cache_log.txt")
-                with open(cache_log_path, "a") as file:
+                with open(cache_log_path, "a+") as file:
                     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
                     file.write(f"Cache saved at: {timestamp}\n")
                     for ip, data in self.cache.items():
@@ -239,7 +241,7 @@ class IPLookupApp:
                         file.write(json.dumps(data, indent=4))
                         file.write("\n")
                     file.write("\n")
-                messagebox.showinfo("Log Saved", f"Saved log to location: {os.path.join(os.getcwd(), cache_log_path)}")
+                messagebox.showinfo("Log Saved", f"Saved log to location: {cache_log_path}")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to save cache log: {str(e)}")
 

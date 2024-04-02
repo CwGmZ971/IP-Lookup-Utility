@@ -17,10 +17,17 @@ For more information about IP addresses, please refer to the [IP Address Wikiped
 
 ## Dependencies
 - `tkinter`: Python's standard GUI (Graphical User Interface) toolkit.
-- `requests`: HTTP library for making requests.
+- `threading`: Allows multithreading.
+- `webbrowser`: Opens URLs in the user's default web browser.
 - `public_ip`: Library to retrieve the user's public IP address.
+- `requests`: HTTP library for making requests.
 - `ipaddress`: Library for working with IP addresses.
+- `appdirs`: Library for determining appropriate locations for user data.
+- `atexit`: Allows registration of cleanup functions.
+- `json`: Library for encoding and decoding JSON data.
+- `time`: Provides various time-related functions.
 - `socket`: Provides access to the BSD socket interface.
+- `os`: Provides functions for interacting with the operating system.
 
 ## Usage
 1. Select the IP type (IPv4 or IPv6).
