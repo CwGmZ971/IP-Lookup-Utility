@@ -225,7 +225,7 @@ class IPLookupApp:
             messagebox.showerror("Error", f"An unexpected error occurred: {response['message']}")
 
     def save_cache(self):
-        if self.save_log_var.get():
+        if self.save_log_var.get() and self.cache:
             try:
                 logs_dir = "Logs"
                 if not os.path.exists(logs_dir):
@@ -237,8 +237,9 @@ class IPLookupApp:
                     for ip, data in self.cache.items():
                         file.write(f"IP Address: {ip}\n")
                         file.write(json.dumps(data, indent=4))
-                        file.write("\n\n")
+                        file.write("\n")
                     file.write("\n")
+                messagebox.showinfo("Log Saved", f"Saved log to location: {os.path.join(os.getcwd(), cache_log_path)}")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to save cache log: {str(e)}")
 
