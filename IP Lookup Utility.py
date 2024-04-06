@@ -28,7 +28,6 @@ class IPLookupApp:
         self.root.geometry("450x230")
         self.root.resizable(False, False)
         self.icon_path = os.path.join(os.getcwd(), "Icon", "LOGO.ico")
-        self.appdata_path = user_data_dir(appname="IP Lookup Utility")
 
         if os.path.exists(self.icon_path):
             self.root.iconbitmap(self.icon_path)
@@ -228,7 +227,7 @@ class IPLookupApp:
     def save_cache(self):
         if self.save_log_var.get() and self.cache:
             try:
-                logs_dir = os.path.join(self.appdata_path, "logs")
+                logs_dir = os.path.join(user_data_dir(appname="IP Lookup Utility"), "logs")
                 if not os.path.exists(logs_dir):
                     os.makedirs(logs_dir)
 
