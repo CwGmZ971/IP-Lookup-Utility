@@ -22,7 +22,7 @@ import os
 class IPLookupApp:
     def __init__(self):
         self.cache = {}
-        self.ver = "2.2.2"
+        self.ver = "2.3.0"
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
