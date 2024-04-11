@@ -22,7 +22,7 @@ import os
 class IPLookupApp:
     def __init__(self):
         self.cache = {}
-        self.ver = "2.3.0"
+        self.ver = "2.3.1"
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
@@ -210,7 +210,6 @@ class IPLookupApp:
 
     def display_ip_info(self, response: dict):
         if response['status'] == 'success':
-            response.pop('status', None)
             format_type = self.format_var.get()
             if format_type == 1:
                 info = f"""Country: {response['country']}
@@ -236,6 +235,8 @@ class IPLookupApp:
                     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
                     file.write(f"Cache saved at: {timestamp}\n")
                     for ip, data in self.cache.items():
+                        data.pop("status", None)
+                        data.pop("query", None)
                         file.write(f"IP Address: {ip}\n")
                         file.write(json.dumps(data, indent=4))
                         file.write("\n")
