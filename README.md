@@ -30,7 +30,7 @@ For more information about IP addresses, please refer to the [IP Address Wikiped
 - `os`: Provides functions for interacting with the operating system.
 
 ## Usage
-![Screenshot of application](README_Images/GUI Image.png)
+[Screenshot of application](README_Images/GUI Image.png)
 1. Select the IP type (IPv4 or IPv6).
 2. Enter the IP address or website URL.
 3. Choose the desired format for the results.
