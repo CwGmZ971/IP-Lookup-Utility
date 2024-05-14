@@ -15,11 +15,11 @@ For more information about IP addresses, please refer to the [IP Address Wikiped
 - **Caching:** Lookup results are cached to improve performance.
 - **Log Saving:** Option to save logs.
 
-## PIP Dependencies (To install, open cmd and type `pip install <package-name>`)
+### PIP Dependencies (To install, open cmd and type `pip install <package-name>`)
 - `public_ip`: Library to retrieve the user's public IP address. [GitHub Link](https://github.com/vterron/public-ip)
 - `requests`: HTTP library for making requests. [GitHub Link](https://github.com/psf/requests)
 
-## Usage
+### Usage
 ![Screenshot of application](README_Images/GUI_Image.png)
 1. Select the IP type (IPv4 or IPv6).
 2. Enter the IP address or website URL.
@@ -32,8 +32,11 @@ For more information about IP addresses, please refer to the [IP Address Wikiped
 
 ## API Usage
 This application relies on the [ip-api.com](http://ip-api.com) API to retrieve information about IP addresses. Please note the following:
-- **API Limitations:** The usage of the API may be subject to rate limits or other restrictions imposed by ip-api.com. Please refer to their documentation for more details.
-- **Internet Connection:** An active internet connection is required for the application to access the API and retrieve IP information.
+- **Acceptable Use Policy**: The use of the API is strictly limited for non-commercial purposes and in non-commercial environments. Please ensure compliance with ip-api.com's [Acceptable Use Policy](https://ip-api.com/docs/legal#acceptable-use).
+- **Privacy Policy**: For anonymous, unauthenticated users of ip-api.com, their [Privacy Policy](https://ip-api.com/docs/legal#privacy-policy) applies. They do not track or analyse access to the website, and no cookies are placed on the user's computer during the usage of the website.
+- **Usage Limits**: The API has usage limits, with a maximum of 45 requests per minute. If this limit is exceeded, access to the API will be temporarily blocked, and repeated violations may result in IP address bans. Please refer to ip-api.com's [Usage Limits](https://ip-api.com/docs/legal#usage-limits) for more information.
+- **Data Accuracy**: While ip-api.com strives to provide accurate data, there may be errors or inaccuracies in the information returned by the API. Please be aware of this when using the data for my application.
+- **Contact**: If you have any questions or concerns about ip-api.com, their services, or privacy policies, you can contact them at contact@ip-api.com.
 
 ## Executable Version
 
@@ -46,5 +49,5 @@ After downloading, extract the zip file's contents and run the executable file t
 ## PyInstaller
 For more information about PyInstaller, please visit the [PyInstaller GitHub repository](https://github.com/pyinstaller/pyinstaller).
 
-# License
-
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details. If there are errors in licensing (to do with the API) please let me know.
