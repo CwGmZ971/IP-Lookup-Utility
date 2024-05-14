@@ -218,7 +218,9 @@ class IPLookupApp:
                         \nISP: {response['isp']}"""
                 messagebox.showinfo(f"IP Lookup Application ({self.ver})", info)
             elif format_type == 2:
-                formatted_info = self.format_json(response)
+                response_copy = response.copy()
+                response_copy.pop("status", None)
+                formatted_info = self.format_json(response_copy)
                 messagebox.showinfo(f"IP Lookup Application ({self.ver})", formatted_info)
         else:
             messagebox.showerror("Error", f"An unexpected error occurred: {response['message']}")
