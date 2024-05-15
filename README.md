@@ -18,7 +18,7 @@ For more information about IP addresses, please refer to the [IP Address Wikiped
 ### PIP Dependencies (To install, open cmd and type `pip install <package-name>`)
 - `public_ip`: Library to retrieve the user's public IP address. [GitHub Link](https://github.com/vterron/public-ip)
 - `requests`: HTTP library for making requests. [GitHub Link](https://github.com/psf/requests)
-- `atexit`: Used in this script to save the cache on exit if conditions are met. [GitHub Link](https://github.com/python/cpython/blob/main/Modules%2Fatexitmodule.c)
+- `atexit`: Used in this script to save the log on exit if conditions are met. [GitHub Link](https://github.com/python/cpython/blob/main/Modules%2Fatexitmodule.c)
 
 ### Usage
 ![Screenshot of application](README_Images/GUI_Image.png)
