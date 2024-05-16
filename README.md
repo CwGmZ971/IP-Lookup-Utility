@@ -13,7 +13,7 @@ For more information about IP addresses, please refer to the [IP Address Wikiped
 - Caching: Lookup results are cached to improve performance.
 - Log Saving: Option to save cache logs.
 
-#### As of v2.4.0b1 (Will add .exe when v2.4.0 leaves beta)
+#### As of v2.4.0
 - An about menu with options for checking for updates using the GitHub API.
 - A button linking to the repository for public contributions.
 - Other details such as version information and a reference to ip-api.com.
