@@ -10,10 +10,14 @@ For more information about IP addresses, please refer to the [IP Address Wikiped
 - Display IP information in either a user-friendly or full format.
 - Capability to check the user's own IP address.
 - Option to view help documentation about IP addresses.
+- Caching: Lookup results are cached to improve performance.
+- Log Saving: Option to save cache logs.
 
-#### As of v2.2.2:
-- **Caching:** Lookup results are cached to improve performance.
-- **Log Saving:** Option to save logs.
+#### As of v2.4.0b1 (Will add .exe when v2.4.0 leaves beta)
+- An about menu with options for checking for updates using the GitHub API.
+- A button linking to the repository for public contributions.
+- Other details such as version information and a reference to ip-api.com.
+- Potentially more in future.
 
 ### PIP Dependencies (To install, open cmd and type `pip install <package-name>`)
 - `public_ip`: Library to retrieve the user's public IP address. [GitHub Link](https://github.com/vterron/public-ip)
