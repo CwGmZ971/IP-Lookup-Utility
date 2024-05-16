@@ -23,7 +23,7 @@ import os
 class IPLookupApp:
     def __init__(self):
         self.cache = {}
-        self.ver = "2.4.0b1"
+        self.ver = "2.4.0"
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
@@ -258,32 +258,33 @@ class IPLookupApp:
         return formatted_info
 
     def check_latest_version(self):  # This function is currently unusable as the repo is private
-        try:
-            response = requests.get("https://api.github.com/repos/CwGmZ971/IP-Lookup-Utility/releases/latest")
-            if response.status_code == 200:
-                latest_version = response.json()["tag_name"]
-                if latest_version != self.ver:
-                    messagebox.showinfo("Update Available", f"New version {latest_version} is available on GitHub.")
+        if self.internet():
+            try:
+                response = requests.get("https://api.github.com/repos/CwGmZ971/IP-Lookup-Utility/releases/latest")
+                if response.status_code == 200:
+                    latest_version = response.json()["tag_name"]
+                    if latest_version != self.ver:
+                        messagebox.showinfo("Update Available", f"New version {latest_version} is available on GitHub.")
+                    else:
+                        messagebox.showinfo("Up to Date", "You are using the latest version.")
                 else:
-                    messagebox.showinfo("Up to Date", "You are using the latest version.")
-            else:
-                messagebox.showerror("Error", "Failed to check for updates. Please try again later.")
-        except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+                    messagebox.showerror("Error", "Failed to check for updates. Please try again later.")
+            except Exception as e:
+                messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
     def show_about_window(self):
         about_window = tk.Toplevel(self.root)
         about_window.title("About")
-        about_window.geometry("320x200")
+        about_window.geometry("280x180")
         about_window.resizable(False, False)
         py_ver = python_version()
         if self.icon_path:
             about_window.iconbitmap(self.icon_path)
 
         about_text = (
-            f"IP Lookup Application v{self.ver}\n"
+            f"IP Lookup App:  {self.ver}\n"
             f"Python Version: {py_ver}\n"
-            "This application relies on the functionality of ip-api.com\n"
+            "This application uses ip-api.com for lookups\n"
             "Check the README.md file for details.\n"
             "Created by CwGmZ971 (Under MIT License)"
         )
@@ -291,12 +292,12 @@ class IPLookupApp:
         about_label = ttk.Label(about_window, text=about_text)
         about_label.pack(pady=10)
 
-        github_button = ttk.Button(about_window, text="Contribute on GitHub",
-                                   command=lambda: w_open("https://github.com/CwGmZ971/IP-Lookup-Utility"))
-        github_button.pack(pady=5)
-
         update_button = ttk.Button(about_window, text="Check for Updates", command=self.check_latest_version)
         update_button.pack(pady=5)
+
+        github_button = ttk.Button(about_window, text="GitHub Repository",
+                                   command=lambda: w_open("https://github.com/CwGmZ971/IP-Lookup-Utility"))
+        github_button.pack(pady=5)
 
     def create_context_menu(self):
         self.context_menu = tk.Menu(self.root, tearoff=0)
