@@ -258,12 +258,17 @@ class IPLookupApp:
         return formatted_info
 
     @staticmethod
-    def download_and_install_update(download_url):
+    def download_update(download_url, latest_version):
         try:
-            response = requests.get(download_url)
+            response = requests.get(download_url, stream=True)
             if response.status_code == 200:
-                update_zip_path = os.path.join(os.getcwd(), "update.zip")
-                print(f"Update Zip File Downloaded in {update_zip_path}")
+                downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+                update_zip_path = os.path.join(downloads_dir, f"IP Lookup Utility ({latest_version}).zip")
+                with open(update_zip_path, 'wb') as file:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk:
+                            file.write(chunk)
+                messagebox.showinfo("Download Complete", f"Update downloaded at {update_zip_path}.")
             else:
                 messagebox.showerror("Error", f"Failed to download the update. (Error Code: {response.status_code})")
         except Exception as e:
@@ -275,12 +280,12 @@ class IPLookupApp:
                 response = requests.get("https://api.github.com/repos/CwGmZ971/IP-Lookup-Utility/releases/latest")
                 if response.status_code == 200:
                     latest_version = response.json()["tag_name"]
-                    if latest_version != self.ver:
-                        download_url = response.json()["assets"][0]["browser_download_url"]
+                    if latest_version[1:] != self.ver:
+                        zipball_url = response.json().get("zipball_url")
                         result = messagebox.askyesno("Update Available",
                                                      f"New version {latest_version} is available. Do you want to download it now?")
                         if result:
-                            self.download_and_install_update(download_url)
+                            self.download_update(zipball_url, latest_version)
                     else:
                         messagebox.showinfo("Up to Date", "You are using the latest version.")
                 else:
