@@ -23,7 +23,7 @@ import os
 class IPLookupApp:
     def __init__(self):
         self.cache = {}
-        self.ver = "2.4.0"
+        self.ver = "2.4.1"
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
@@ -257,18 +257,35 @@ class IPLookupApp:
             formatted_info += f"{key}: {value}\n"
         return formatted_info
 
-    def check_latest_version(self):  # This function is currently unusable as the repo is private
+    @staticmethod
+    def download_and_install_update(download_url):
+        try:
+            response = requests.get(download_url)
+            if response.status_code == 200:
+                update_zip_path = os.path.join(os.getcwd(), "update.zip")
+                print(f"Update Zip File Downloaded in {update_zip_path}")
+            else:
+                messagebox.showerror("Error", f"Failed to download the update. (Error Code: {response.status_code})")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while downloading the update: {str(e)}")
+
+    def check_latest_version(self):
         if self.internet():
             try:
                 response = requests.get("https://api.github.com/repos/CwGmZ971/IP-Lookup-Utility/releases/latest")
                 if response.status_code == 200:
                     latest_version = response.json()["tag_name"]
                     if latest_version != self.ver:
-                        messagebox.showinfo("Update Available", f"New version {latest_version} is available on GitHub.")
+                        download_url = response.json()["assets"][0]["browser_download_url"]
+                        result = messagebox.askyesno("Update Available",
+                                                     f"New version {latest_version} is available. Do you want to download it now?")
+                        if result:
+                            self.download_and_install_update(download_url)
                     else:
                         messagebox.showinfo("Up to Date", "You are using the latest version.")
                 else:
-                    messagebox.showerror("Error", "Failed to check for updates. Please try again later.")
+                    messagebox.showerror("Error",
+                                         f"Failed to check for updates. Please try again later. (Error Code: {response.status_code})")
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
