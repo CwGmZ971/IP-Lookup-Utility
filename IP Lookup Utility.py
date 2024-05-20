@@ -104,6 +104,45 @@ class IPLookupApp:
         help_button = ttk.Button(buttons_frame, text="IP Format Help", command=self.show_help)
         help_button.pack(side=tk.LEFT, padx=10)
 
+    def show_about_window(self):
+        about_window = tk.Toplevel(self.root)
+        about_window.title("About")
+        about_window.geometry("280x180")
+        about_window.resizable(False, False)
+        py_ver = python_version()
+        if self.icon_path:
+            about_window.iconbitmap(self.icon_path)
+
+        about_text = (
+            f"IP Lookup App:  {self.ver}\n"
+            f"Python Version: {py_ver}\n"
+            "This application uses ip-api.com for lookups\n"
+            "Check the README.md file for details.\n"
+            "Created by CwGmZ971 (Under MIT License)"
+        )
+
+        about_label = ttk.Label(about_window, text=about_text)
+        about_label.pack(pady=10)
+
+        update_button = ttk.Button(about_window, text="Check for Updates", command=self.check_latest_version)
+        update_button.pack(pady=5)
+
+        github_button = ttk.Button(about_window, text="GitHub Repository",
+                                   command=lambda: w_open("https://github.com/CwGmZ971/IP-Lookup-Utility"))
+        github_button.pack(pady=5)
+
+    def create_context_menu(self):
+        self.context_menu = tk.Menu(self.root, tearoff=0)
+        self.context_menu.add_command(label="About", command=self.show_about_window)
+
+    def show_context_menu(self, event):
+        # Check if the click occurred on a blank space
+        if event.widget == self.root:
+            try:
+                self.context_menu.tk_popup(event.x_root, event.y_root)
+            finally:
+                self.context_menu.grab_release()
+
     def ip_lookup(self):
         if self.internet():
             ip_type = self.ip_type_var.get()
@@ -281,11 +320,11 @@ class IPLookupApp:
                 if response.status_code == 200:
                     latest_version = response.json()["tag_name"]
                     if latest_version[1:] != self.ver:
-                        zipball_url = response.json().get("zipball_url")
+                        download_url = response.json().get("zipball_url")
                         result = messagebox.askyesno("Update Available",
                                                      f"New version {latest_version} is available. Do you want to download it now?")
                         if result:
-                            self.download_update(zipball_url, latest_version)
+                            self.download_update(download_url, latest_version)
                     else:
                         messagebox.showinfo("Up to Date", "You are using the latest version.")
                 else:
@@ -293,45 +332,6 @@ class IPLookupApp:
                                          f"Failed to check for updates. Please try again later. (Error Code: {response.status_code})")
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
-
-    def show_about_window(self):
-        about_window = tk.Toplevel(self.root)
-        about_window.title("About")
-        about_window.geometry("280x180")
-        about_window.resizable(False, False)
-        py_ver = python_version()
-        if self.icon_path:
-            about_window.iconbitmap(self.icon_path)
-
-        about_text = (
-            f"IP Lookup App:  {self.ver}\n"
-            f"Python Version: {py_ver}\n"
-            "This application uses ip-api.com for lookups\n"
-            "Check the README.md file for details.\n"
-            "Created by CwGmZ971 (Under MIT License)"
-        )
-
-        about_label = ttk.Label(about_window, text=about_text)
-        about_label.pack(pady=10)
-
-        update_button = ttk.Button(about_window, text="Check for Updates", command=self.check_latest_version)
-        update_button.pack(pady=5)
-
-        github_button = ttk.Button(about_window, text="GitHub Repository",
-                                   command=lambda: w_open("https://github.com/CwGmZ971/IP-Lookup-Utility"))
-        github_button.pack(pady=5)
-
-    def create_context_menu(self):
-        self.context_menu = tk.Menu(self.root, tearoff=0)
-        self.context_menu.add_command(label="About", command=self.show_about_window)
-
-    def show_context_menu(self, event):
-        # Check if the click occurred on a blank space
-        if event.widget == self.root:
-            try:
-                self.context_menu.tk_popup(event.x_root, event.y_root)
-            finally:
-                self.context_menu.grab_release()
 
     def run(self):
         if self.internet():
