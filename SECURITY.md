@@ -2,8 +2,6 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are currently being supported with security updates.
-
 | Version | Supported          |
 | ------- | ------------------ |
 | 2.4.1   | :white_check_mark: |
@@ -12,8 +10,6 @@ Use this section to tell people about which versions of your project are current
 | < 2.3   | :x:                |
 
 ## Reporting a Vulnerability
-
-Use this section to tell people how to report a vulnerability.
 
 If you discover a security vulnerability in the IP Lookup Application, please report it to us by [creating a new issue](https://github.com/CwGmZ971/IP-Lookup-Utility/issues/new) in the GitHub repository.
 
