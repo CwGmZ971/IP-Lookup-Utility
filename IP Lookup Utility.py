@@ -10,9 +10,9 @@ from threading import Thread
 from webbrowser import open as w_open
 from appdirs import user_data_dir
 from platform import python_version
+from utils import *
 import public_ip
 import requests
-import ipaddress
 import atexit
 import json
 import time
@@ -101,7 +101,7 @@ class IPLookupApp:
         website_lookup_button.pack(side=tk.LEFT, padx=10)
         own_ip_button = ttk.Button(buttons_frame, text="Own IP Lookup", command=self.own_ip_lookup)
         own_ip_button.pack(side=tk.LEFT, padx=10)
-        help_button = ttk.Button(buttons_frame, text="IP Format Help", command=self.show_help)
+        help_button = ttk.Button(buttons_frame, text="IP Format Help", command=show_help)
         help_button.pack(side=tk.LEFT, padx=10)
 
     def show_about_window(self):
@@ -144,30 +144,30 @@ class IPLookupApp:
                 self.context_menu.grab_release()
 
     def ip_lookup(self):
-        if self.internet():
+        if internet():
             ip_type = self.ip_type_var.get()
             ip = self.ip_entry.get()
             self.ip_entry.delete(0, tk.END)
             if len(ip) == 0:
                 messagebox.showerror("Error", "Nothing entered in IP input box")
                 return
-            elif ip_type == 1 and not self.is_valid_ip_address(ip, 1):
+            elif ip_type == 1 and not is_valid_ip_address(ip, 1):
                 messagebox.showerror("Error", "Invalid IPv4 address format. Please try again.")
                 return
-            elif ip_type == 2 and not self.is_valid_ip_address(ip, 2):
+            elif ip_type == 2 and not is_valid_ip_address(ip, 2):
                 messagebox.showerror("Error", "Invalid IPv6 address format. Please try again.")
                 return
 
             if ip in self.cache:
                 response = self.cache[ip]
             else:
-                response = self.get_ip_info(ip)
+                response = get_ip_info(ip)
                 self.cache[ip] = response
 
             self.display_ip_info(response)
 
     def website_ip_lookup(self):
-        if self.internet():
+        if internet():
             website_url = self.website_entry.get()
             self.website_entry.delete(0, tk.END)
             if len(website_url) == 0:
@@ -182,7 +182,7 @@ class IPLookupApp:
                 if ip in self.cache:
                     response = self.cache[ip]
                 else:
-                    response = self.get_ip_info(ip)
+                    response = get_ip_info(ip)
                     self.cache[ip] = response
 
                 self.display_ip_info(response)
@@ -207,7 +207,7 @@ class IPLookupApp:
             if ip in self.cache:
                 response = self.cache[ip]
             else:
-                response = self.get_ip_info(ip)
+                response = get_ip_info(ip)
                 self.cache[ip] = response
 
             self.display_ip_info(response)
@@ -217,38 +217,8 @@ class IPLookupApp:
             messagebox.showerror("Error", str(err))
 
     def own_ip_lookup(self):
-        if self.internet():
+        if internet():
             Thread(target=self.perform_own_ip_lookup, daemon=True).start()
-
-    @staticmethod
-    def is_valid_ip_address(address: str, ip_type: int) -> bool:
-        try:
-            if ip_type == 1:
-                ipaddress.IPv4Address(address)
-            elif ip_type == 2:
-                ipaddress.IPv6Address(address)
-            return True
-        except ipaddress.AddressValueError:
-            return False
-
-    @staticmethod
-    def get_ip_info(ip: str) -> dict:
-        response = requests.get("http://ip-api.com/json/" + ip).json()
-        return response
-
-    @staticmethod
-    def internet() -> bool:
-        try:
-            response = requests.get("https://www.google.com")
-            if response.status_code == 200:
-                return True
-        except requests.ConnectionError:
-            messagebox.showerror("Error", "You are not connected to the internet.")
-            return False
-
-    @staticmethod
-    def show_help():
-        w_open("https://en.wikipedia.org/wiki/IP_address")
 
     def display_ip_info(self, response: dict):
         if response['status'] == 'success':
@@ -262,7 +232,7 @@ class IPLookupApp:
             elif format_type == 2:
                 response_copy = response.copy()
                 response_copy.pop("status", None)
-                formatted_info = self.format_json(response_copy)
+                formatted_info = format_json(response_copy)
                 messagebox.showinfo(f"IP Lookup Application ({self.ver})", formatted_info)
         else:
             messagebox.showerror("Error", f"An unexpected error occurred: {response['message']}")
@@ -289,32 +259,8 @@ class IPLookupApp:
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to save cache log: {str(e)}")
 
-    @staticmethod
-    def format_json(json_data: dict) -> str:
-        formatted_info = ""
-        for key, value in json_data.items():
-            formatted_info += f"{key}: {value}\n"
-        return formatted_info
-
-    @staticmethod
-    def download_update(download_url, latest_version):
-        try:
-            response = requests.get(download_url, stream=True)
-            if response.status_code == 200:
-                downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-                update_zip_path = os.path.join(downloads_dir, f"IP Lookup Utility ({latest_version}).zip")
-                with open(update_zip_path, 'wb') as file:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        if chunk:
-                            file.write(chunk)
-                messagebox.showinfo("Download Complete", f"Update downloaded at {update_zip_path}.")
-            else:
-                messagebox.showerror("Error", f"Failed to download the update. (Error Code: {response.status_code})")
-        except Exception as e:
-            messagebox.showerror("Error", f"An error occurred while downloading the update: {str(e)}")
-
     def check_latest_version(self):
-        if self.internet():
+        if internet():
             try:
                 response = requests.get("https://api.github.com/repos/CwGmZ971/IP-Lookup-Utility/releases/latest")
                 if response.status_code == 200:
@@ -324,7 +270,7 @@ class IPLookupApp:
                         result = messagebox.askyesno("Update Available",
                                                      f"New version {latest_version} is available. Do you want to download it now?")
                         if result:
-                            self.download_update(download_url, latest_version)
+                            download_update(download_url, latest_version)
                     else:
                         messagebox.showinfo("Up to Date", "You are using the latest version.")
                 else:
@@ -334,7 +280,7 @@ class IPLookupApp:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
     def run(self):
-        if self.internet():
+        if internet():
             self.root.mainloop()
         else:
             self.root.destroy()
