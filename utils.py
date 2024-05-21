@@ -47,7 +47,7 @@ def format_json(json_data: dict) -> str:
     return formatted_info
 
 
-def download_update(download_url, latest_version):
+def download_update(download_url: str, latest_version: str):
     try:
         response = requests.get(download_url, stream=True)
         if response.status_code == 200:

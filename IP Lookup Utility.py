@@ -10,7 +10,8 @@ from threading import Thread
 from webbrowser import open as w_open
 from appdirs import user_data_dir
 from platform import python_version
-from utils import *
+from utils import (is_valid_ip_address, get_ip_info, internet,
+                   show_help, format_json, download_update)
 import public_ip
 import requests
 import atexit
