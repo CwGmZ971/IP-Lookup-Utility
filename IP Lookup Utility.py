@@ -11,7 +11,7 @@ from webbrowser import open as w_open
 from appdirs import user_data_dir
 from platform import python_version
 from utils import (is_valid_ip_address, get_ip_info, internet,
-                   show_help, format_json, download_update)
+                   show_help, format_json)
 import public_ip
 import requests
 import atexit
@@ -24,7 +24,7 @@ import os
 class IPLookupApp:
     def __init__(self):
         self.cache = {}
-        self.ver = "2.4.1"
+        self.ver = "2.4.2"
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
@@ -260,6 +260,52 @@ class IPLookupApp:
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to save cache log: {str(e)}")
 
+    def download_update(self, download_url, latest_version):
+        try:
+            response = requests.get(download_url, stream=True)
+            if response.status_code == 200:
+                total_size = int(response.headers.get('Content-Length', 0))
+                block_size = 8192
+                downloaded_size = 0
+
+                downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+                update_zip_path = os.path.join(downloads_dir, f"IP Lookup Utility ({latest_version}).zip")
+
+                self.show_download_progress()
+
+                with open(update_zip_path, 'wb') as file:
+                    for chunk in response.iter_content(chunk_size=block_size):
+                        if chunk:
+                            file.write(chunk)
+                            downloaded_size += len(chunk)
+                            progress_percentage = (downloaded_size / total_size) * 100
+                            self.update_progress_bar(progress_percentage)
+
+                self.progress_window.destroy()
+                messagebox.showinfo("Download Complete", f"Update downloaded at {update_zip_path}.")
+            else:
+                messagebox.showerror("Error", f"Failed to download the update. (Error Code: {response.status_code})")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while downloading the update: {str(e)}")
+
+    def show_download_progress(self):
+        self.progress_window = tk.Toplevel(self.root)
+        self.progress_window.title("Downloading Update")
+        self.progress_window.geometry("300x100")
+        self.progress_window.resizable(False, False)
+        if self.icon_path:
+            self.progress_window.iconbitmap(self.icon_path)
+
+        self.progress_label = ttk.Label(self.progress_window, text="Downloading update, please wait...")
+        self.progress_label.pack(pady=10)
+
+        self.progress_bar = ttk.Progressbar(self.progress_window, orient="horizontal", length=250, mode="determinate")
+        self.progress_bar.pack(pady=10)
+
+    def update_progress_bar(self, value):
+        self.progress_bar["value"] = value
+        self.progress_window.update_idletasks()
+
     def check_latest_version(self):
         if internet():
             try:
@@ -271,7 +317,7 @@ class IPLookupApp:
                         result = messagebox.askyesno("Update Available",
                                                      f"New version {latest_version} is available. Do you want to download it now?")
                         if result:
-                            download_update(download_url, latest_version)
+                            self.download_update(download_url, latest_version)
                     else:
                         messagebox.showinfo("Up to Date", "You are using the latest version.")
                 else:
