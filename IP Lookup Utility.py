@@ -10,8 +10,8 @@ from threading import Thread
 from webbrowser import open as w_open
 from appdirs import user_data_dir
 from platform import python_version
-from utils import (is_valid_ip_address, get_ip_info, internet,
-                   show_help, format_json)
+from utils import (is_valid_ip_address, get_ip_info,
+                   internet, format_json)
 import public_ip
 import requests
 import atexit
@@ -49,18 +49,18 @@ class IPLookupApp:
         self.save_log_var = tk.BooleanVar(value=False)
 
         self.style = ttk.Style()
-        self.create_widgets()
-        self.create_context_menu()
+        self.create_mainWindow()
         self.root.bind("<Button-3>", self.show_context_menu)
 
         atexit.register(self.save_cache)
 
-    def create_widgets(self):
+    def create_mainWindow(self):
         self.create_ip_type_frame()
         self.create_ip_entry_frame()
         self.create_website_entry_frame()
         self.create_format_frame()
         self.create_buttons_frame()
+        self.create_context_menu()
 
     def create_ip_type_frame(self):
         ip_type_frame = ttk.Frame(self.root)
@@ -110,8 +110,13 @@ class IPLookupApp:
         website_lookup_button.pack(side=tk.LEFT, padx=10)
         own_ip_button = ttk.Button(buttons_frame, text="Own IP Lookup", command=self.own_ip_lookup)
         own_ip_button.pack(side=tk.LEFT, padx=10)
-        help_button = ttk.Button(buttons_frame, text="IP Format Help", command=show_help)
+        help_button = ttk.Button(buttons_frame, text="IP Format Help",
+                                 command=lambda: w_open("https://en.wikipedia.org/wiki/IP_address"))
         help_button.pack(side=tk.LEFT, padx=10)
+
+    def create_context_menu(self):
+        self.context_menu = tk.Menu(self.root, tearoff=0)
+        self.context_menu.add_command(label="About", command=self.show_about_window)
 
     def show_about_window(self):
         about_window = tk.Toplevel(self.root)
@@ -139,10 +144,6 @@ class IPLookupApp:
         github_button = ttk.Button(about_window, text="GitHub Repository",
                                    command=lambda: w_open("https://github.com/CwGmZ971/IP-Lookup-Utility"))
         github_button.pack(pady=5)
-
-    def create_context_menu(self):
-        self.context_menu = tk.Menu(self.root, tearoff=0)
-        self.context_menu.add_command(label="About", command=self.show_about_window)
 
     def show_context_menu(self, event: tk.Event):
         # Check if the click occurred on a blank space
@@ -209,8 +210,8 @@ class IPLookupApp:
         self.please_wait_label.pack(pady=20)
 
     def perform_own_ip_lookup(self):
-        self.show_please_wait_window()
         try:
+            self.show_please_wait_window()
             ip = public_ip.get()
 
             if ip in self.cache:

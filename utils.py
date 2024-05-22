@@ -35,10 +35,6 @@ def internet() -> bool:
         return False
 
 
-def show_help():
-    w_open("https://en.wikipedia.org/wiki/IP_address")
-
-
 def format_json(json_data: dict) -> str:
     formatted_info = ""
     for key, value in json_data.items():
