@@ -144,7 +144,7 @@ class IPLookupApp:
         self.context_menu = tk.Menu(self.root, tearoff=0)
         self.context_menu.add_command(label="About", command=self.show_about_window)
 
-    def show_context_menu(self, event):
+    def show_context_menu(self, event: tk.Event):
         # Check if the click occurred on a blank space
         if event.widget == self.root:
             try:
@@ -268,7 +268,7 @@ class IPLookupApp:
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to save cache log: {str(e)}")
 
-    def download_update(self, download_url, latest_version):
+    def download_update(self, download_url: str, latest_version: str):
         try:
             response = requests.get(download_url, stream=True)
             if response.status_code == 200:
@@ -315,7 +315,7 @@ class IPLookupApp:
         self.progress_bar = ttk.Progressbar(self.progress_window, orient="horizontal", length=250, mode="determinate")
         self.progress_bar.pack(pady=10)
 
-    def update_progress_bar(self, value):
+    def update_progress_bar(self, value: float):
         self.progress_bar["value"] = value
         self.progress_window.update_idletasks()
 
