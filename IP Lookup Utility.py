@@ -22,6 +22,14 @@ import os
 
 
 class IPLookupApp:
+    """
+    This class is organised in the following way:
+    - __init__ method
+    - GUI methods
+    - IP Lookup methods
+    - Cache methods
+    - Update handling methods
+    """
     def __init__(self):
         self.cache = {}
         self.ver = "2.4.2"
@@ -264,7 +272,7 @@ class IPLookupApp:
         try:
             response = requests.get(download_url, stream=True)
             if response.status_code == 200:
-                total_size = int(response.headers.get('Content-Length', 0))
+                total_size = int(response.headers.get('content-length', 0))
                 block_size = 8192
                 downloaded_size = 0
 
@@ -285,8 +293,13 @@ class IPLookupApp:
                 messagebox.showinfo("Download Complete", f"Update downloaded at {update_zip_path}.")
             else:
                 messagebox.showerror("Error", f"Failed to download the update. (Error Code: {response.status_code})")
+                # Remove the partially downloaded file if error occurs
+                if os.path.exists(update_zip_path):
+                    os.remove(update_zip_path)
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while downloading the update: {str(e)}")
+            if os.path.exists(update_zip_path):
+                os.remove(update_zip_path)
 
     def show_download_progress(self):
         self.progress_window = tk.Toplevel(self.root)
