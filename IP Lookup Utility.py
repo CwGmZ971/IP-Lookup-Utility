@@ -32,7 +32,8 @@ class IPLookupApp:
     """
     def __init__(self):
         self.cache = {}
-        self.ver = "2.4.2"
+        self.ver = "2.4.3"
+        self.about_window = None
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
         self.root.geometry("450x230")
@@ -119,13 +120,20 @@ class IPLookupApp:
         self.context_menu.add_command(label="About", command=self.show_about_window)
 
     def show_about_window(self):
-        about_window = tk.Toplevel(self.root)
-        about_window.title("About")
-        about_window.geometry("280x180")
-        about_window.resizable(False, False)
+        if self.about_window is not None and tk.Toplevel.winfo_exists(self.about_window):
+            if not self.about_window.winfo_viewable():
+                self.about_window.deiconify()
+            self.about_window.lift()
+            self.about_window.focus_force()
+            return
+
+        self.about_window = tk.Toplevel(self.root)
+        self.about_window.title("About")
+        self.about_window.geometry("280x180")
+        self.about_window.resizable(False, False)
         py_ver = python_version()
         if self.icon_path:
-            about_window.iconbitmap(self.icon_path)
+            self.about_window.iconbitmap(self.icon_path)
 
         about_text = (
             f"IP Lookup App:  {self.ver}\n"
@@ -135,13 +143,13 @@ class IPLookupApp:
             "Created by CwGmZ971 (Under MIT License)"
         )
 
-        about_label = ttk.Label(about_window, text=about_text)
+        about_label = ttk.Label(self.about_window, text=about_text)
         about_label.pack(pady=10)
 
-        update_button = ttk.Button(about_window, text="Check for Updates", command=self.check_latest_version)
+        update_button = ttk.Button(self.about_window, text="Check for Updates", command=self.check_latest_version)
         update_button.pack(pady=5)
 
-        github_button = ttk.Button(about_window, text="GitHub Repository",
+        github_button = ttk.Button(self.about_window, text="GitHub Repository",
                                    command=lambda: w_open("https://github.com/CwGmZ971/IP-Lookup-Utility"))
         github_button.pack(pady=5)
 
