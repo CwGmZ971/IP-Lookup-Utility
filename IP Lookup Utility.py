@@ -32,7 +32,7 @@ class IPLookupApp:
     """
     def __init__(self):
         self.cache = {}
-        self.ver = "2.4.3"
+        self.ver = "2.5.0"
         self.about_window = None
         self.root = tk.Tk()
         self.root.title(f"IP Lookup Application ({self.ver})")
@@ -212,10 +212,13 @@ class IPLookupApp:
         self.please_wait_window.title("Please Wait")
         self.please_wait_window.geometry("200x100")
         self.please_wait_window.resizable(False, False)
+
         if self.icon_path:
             self.please_wait_window.iconbitmap(self.icon_path)
+
         self.please_wait_label = ttk.Label(self.please_wait_window, text="Request sent. Please wait...")
         self.please_wait_label.pack(pady=20)
+        self.please_wait_window.update_idletasks()
 
     def perform_own_ip_lookup(self):
         try:
@@ -281,52 +284,31 @@ class IPLookupApp:
         try:
             response = requests.get(download_url, stream=True)
             if response.status_code == 200:
-                total_size = int(response.headers.get('content-length', 0))
                 block_size = 8192
-                downloaded_size = 0
 
                 downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
                 update_zip_path = os.path.join(downloads_dir, f"IP Lookup Utility ({latest_version}).zip")
 
-                self.show_download_progress()
+                self.show_please_wait_window()
 
                 with open(update_zip_path, 'wb') as file:
                     for chunk in response.iter_content(chunk_size=block_size):
                         if chunk:
                             file.write(chunk)
-                            downloaded_size += len(chunk)
-                            progress_percentage = (downloaded_size / total_size) * 100
-                            self.update_progress_bar(progress_percentage)
 
-                self.progress_window.destroy()
                 messagebox.showinfo("Download Complete", f"Update downloaded at {update_zip_path}.")
             else:
                 messagebox.showerror("Error", f"Failed to download the update. (Error Code: {response.status_code})")
                 # Remove the partially downloaded file if error occurs
                 if os.path.exists(update_zip_path):
                     os.remove(update_zip_path)
+
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while downloading the update: {str(e)}")
             if os.path.exists(update_zip_path):
                 os.remove(update_zip_path)
 
-    def show_download_progress(self):
-        self.progress_window = tk.Toplevel(self.root)
-        self.progress_window.title("Downloading Update")
-        self.progress_window.geometry("300x100")
-        self.progress_window.resizable(False, False)
-        if self.icon_path:
-            self.progress_window.iconbitmap(self.icon_path)
-
-        self.progress_label = ttk.Label(self.progress_window, text="Downloading update, please wait...")
-        self.progress_label.pack(pady=10)
-
-        self.progress_bar = ttk.Progressbar(self.progress_window, orient="horizontal", length=250, mode="determinate")
-        self.progress_bar.pack(pady=10)
-
-    def update_progress_bar(self, value: float):
-        self.progress_bar["value"] = value
-        self.progress_window.update_idletasks()
+        self.please_wait_window.destroy()
 
     def check_latest_version(self):
         if internet():
