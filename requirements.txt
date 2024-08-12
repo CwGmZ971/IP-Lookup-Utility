@@ -1,3 +1,0 @@
-requests~=2.32.2
-appdirs~=1.4.4
-public-ip~=0.12
