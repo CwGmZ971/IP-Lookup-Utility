@@ -120,6 +120,7 @@ class IPLookupApp:
         self.context_menu.add_command(label="About", command=self.show_about_window)
 
     def show_about_window(self):
+        # Stops the user from spawning more than a single about window instance
         if self.about_window is not None and tk.Toplevel.winfo_exists(self.about_window):
             if not self.about_window.winfo_viewable():
                 self.about_window.deiconify()
@@ -131,10 +132,10 @@ class IPLookupApp:
         self.about_window.title("About")
         self.about_window.geometry("280x180")
         self.about_window.resizable(False, False)
-        py_ver = python_version()
         if self.icon_path:
             self.about_window.iconbitmap(self.icon_path)
 
+        py_ver = python_version()
         about_text = (
             f"IP Lookup App:  {self.ver}\n"
             f"Python Version: {py_ver}\n"
@@ -154,19 +155,27 @@ class IPLookupApp:
         github_button.pack(pady=5)
 
     def show_context_menu(self, event: tk.Event):
-        # Check if the click occurred on a blank space
+        # If the click occurred on a blank space
         if event.widget == self.root:
             try:
                 self.context_menu.tk_popup(event.x_root, event.y_root)
             finally:
                 self.context_menu.grab_release()
 
+    def get_response(self, ip: str) -> dict:
+        if ip in self.cache:
+            response = self.cache[ip]
+        else:
+            response = get_ip_info(ip)
+            self.cache[ip] = response
+        return response
+    
     def ip_lookup(self):
         if internet():
             ip_type = self.ip_type_var.get()
             ip = self.ip_entry.get()
             self.ip_entry.delete(0, tk.END)
-            if len(ip) == 0:
+            if not ip:
                 messagebox.showerror("Error", "Nothing entered in IP input box")
                 return
             elif ip_type == 1 and not is_valid_ip_address(ip, 1):
@@ -175,13 +184,8 @@ class IPLookupApp:
             elif ip_type == 2 and not is_valid_ip_address(ip, 2):
                 messagebox.showerror("Error", "Invalid IPv6 address format. Please try again.")
                 return
-
-            if ip in self.cache:
-                response = self.cache[ip]
-            else:
-                response = get_ip_info(ip)
-                self.cache[ip] = response
-
+            
+            response = self.get_response(ip)
             self.display_ip_info(response)
 
     def website_ip_lookup(self):
@@ -196,13 +200,7 @@ class IPLookupApp:
                 return
             try:
                 ip = socket.gethostbyname(website_url)
-
-                if ip in self.cache:
-                    response = self.cache[ip]
-                else:
-                    response = get_ip_info(ip)
-                    self.cache[ip] = response
-
+                response = self.get_response(ip)
                 self.display_ip_info(response)
             except socket.gaierror:
                 messagebox.showerror("Error", "The website you entered doesn't exist.")
@@ -224,15 +222,9 @@ class IPLookupApp:
         try:
             self.show_please_wait_window()
             ip = public_ip.get()
-
-            if ip in self.cache:
-                response = self.cache[ip]
-            else:
-                response = get_ip_info(ip)
-                self.cache[ip] = response
-
-            self.display_ip_info(response)
+            response = self.get_response(ip)
             self.please_wait_window.destroy()
+            self.display_ip_info(response)
         except (ValueError, IOError) as err:
             self.please_wait_window.destroy()
             messagebox.showerror("Error", str(err))
@@ -326,7 +318,7 @@ class IPLookupApp:
                         messagebox.showinfo("Up to Date", "You are using the latest version.")
                 else:
                     messagebox.showerror("Error",
-                                         f"Failed to check for updates. Please try again later. (Error Code: {response.status_code})")
+                                         f"Failed to check for updates. Please try again later. (HTTP Error Code: {response.status_code})")
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
