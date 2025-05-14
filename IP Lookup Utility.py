@@ -288,7 +288,7 @@ class IPLookupApp:
                         if chunk:
                             file.write(chunk)
 
-                messagebox.showinfo("Download Complete", f"Update downloaded at {update_zip_path}.")
+                messagebox.showinfo("Download Complete", f"Update downloaded to {update_zip_path}.")
             else:
                 messagebox.showerror("Error", f"Failed to download the update. (Error Code: {response.status_code})")
                 # Remove the partially downloaded file if error occurs
